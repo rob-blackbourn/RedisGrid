@@ -67,7 +67,7 @@ This will return the entire grid
     > GRID.DIM mygrid 2 3 1 2 3 4 5 6
     OK
     > GRID.RANGE foo 0 -1 0 -1
-    ) 1
+    1) 1
     2) 2
     3) 3
     4) 4
