@@ -6,11 +6,47 @@ A grid module for Redis
 
 This is definately alpha. Use at you're own risk.
 
+It wwas developed on CentOS 7 against Redis 4.0.7.
+
 ## Description
 
 This module provides a type which can hold a grid of data indexed by row and column.
 
+## Installation
+
+To use the module it must be compiled, copied to an installtion directory, and loaded into Redies.
+
+To build on most flavours for Linux.
+
+    git clone https://github.com/rob-blackbourn/RedisGrid.git
+    cd RedisGrid/src
+    make
+    sudo mkdir -p /usr/local/share/redis
+    sudo install grid.so /usr/local/share/redis
+
+Assuming it was installed as above, loading it into Redis can be done from redis-clie as follows:
+
+    MODULE LOAD /usr/local/share/redis/grid.so
+
+Or you can add it to the redis.conf (typically in /etc/redis/redis_6379.conf).
+
+    loadmodule /usr/local/share/redis/grid.so
+    
+### Notes
+
+Loading modules which define new types from the command line can cause problems. 
+If persistence is enabled in the Redis server, any module defined types objects in the cache will be saved to disk. 
+If the server is restarted without these module loaded it will fail when attempting to load module defined types.
+It is almost always better to load the module through the redis.conf configuration file.
+
 ## Commands
+
+The following commands are available:
+
+* GRID.DIM - dimension a new grid
+* GRID.RANGE - return a range of data from a grid
+* GRID.SHAPE - return the shape of a grid
+* GRID.SET - set values in a grid
 
 ### GRID.DIM - dimension a new grid
 
