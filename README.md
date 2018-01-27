@@ -16,7 +16,7 @@ This module provides a type which can hold a grid of data indexed by row and col
 
 To use the module it must be compiled, copied to an installtion directory, and loaded into Redies.
 
-To build on most flavours for Linux.
+To build on most flavours of Linux.
 
     git clone https://github.com/rob-blackbourn/RedisGrid.git
     cd RedisGrid/src
