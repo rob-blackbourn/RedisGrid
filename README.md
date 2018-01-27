@@ -35,8 +35,8 @@ Or you can add it to the redis.conf (typically in /etc/redis/redis_6379.conf).
 ### Notes
 
 Loading modules which define new types from the command line can cause problems. 
-If persistence is enabled in the Redis server, any module defined types objects in the cache will be saved to disk. 
-If the server is restarted without these module loaded it will fail when attempting to load module defined types.
+If persistence is enabled in the Redis server, any type objects defined by the module that are left in the cache will be saved to disk. 
+The server will fail to restart without these modules loaded when it tries to read the module defined types.
 It is almost always better to load the module through the redis.conf configuration file.
 
 ## Commands
