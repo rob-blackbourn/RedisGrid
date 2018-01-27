@@ -513,7 +513,7 @@ void *GridType_RdbLoad(RedisModuleIO *rdb, int encver)
 void GridType_AofRewrite(RedisModuleIO *aof, RedisModuleString *key, void *value) 
 {
     struct GridTypeObject *o = value;
-    RedisModule_EmitAOF(aof, "GRID.DIM","vll", key, (long long)o->rows, (long long)o->columns);
+    RedisModule_EmitAOF(aof, "GRID.DIM","sll", key, (long long)o->rows, (long long)o->columns);
     char** p = o->start;
     for (size_t r = 0; r < o->rows; ++r)
     {
