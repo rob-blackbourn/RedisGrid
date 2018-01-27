@@ -24,7 +24,7 @@ To build on most flavours of Linux.
     sudo mkdir -p /usr/local/share/redis
     sudo install grid.so /usr/local/share/redis
 
-Assuming it was installed as above, loading it into Redis can be done from redis-clie as follows:
+Assuming it was installed as above, loading it into Redis can be done from redis-cli as follows:
 
     MODULE LOAD /usr/local/share/redis/grid.so
 
