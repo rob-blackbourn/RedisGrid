@@ -482,7 +482,7 @@ int GridType_DumpCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc
 
     struct GridTypeObject *o = RedisModule_ModuleTypeGetValue(key);
 
-    RedisModule_ReplyWithArray(ctx, (long) (2 + o->rows + o->columns));
+    RedisModule_ReplyWithArray(ctx, (long) (2 + o->rows * o->columns));
 
     RedisModule_ReplyWithLongLong(ctx, (long long)o->rows);
     RedisModule_ReplyWithLongLong(ctx, (long long)o->columns);
