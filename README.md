@@ -204,4 +204,9 @@ This example returns the bounds and data for the grid.
     7) 5
     8) 6
     9) 7
+    10) 8
+    11) 9
+    12) 10
+    13) 11
+    14) 12
 
