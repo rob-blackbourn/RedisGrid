@@ -47,6 +47,7 @@ The following commands are available:
 * GRID.RANGE - return a range of data from a grid
 * GRID.SHAPE - return the shape of a grid
 * GRID.SET - set values in a grid
+* GRID.DUMP - return the bounds and values for a grid
 
 ### GRID.DIM - dimension a new grid
 
@@ -180,3 +181,27 @@ This example sets the last two columns of each row with the given values.
     4) 4
     5) c
     6) d
+
+### * GRID.DUMP - return the bounds and values for a grid
+
+    GRID.DUMP <key>
+
+* key - key name for the grid
+
+#### Examples
+
+This example returns the bounds and data for the grid.
+
+    > GRID.DIM foo 3 4 1 2 3 4 5 6 7 8 9 10 11 12
+    OK
+    > GRID.DUMP foo
+    1) (integer) 3
+    2) (integer) 4
+    3) 1
+    4) 2
+    5) 3
+    6) 4
+    7) 5
+    8) 6
+    9) 7
+
