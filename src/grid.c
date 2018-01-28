@@ -465,6 +465,34 @@ int GridType_ShapeCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int arg
     return REDISMODULE_OK;
 }
 
+int GridType_DumpCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
+{
+    // GRID.DUMP KEY
+    if (argc != 2)
+        return RedisModule_WrongArity(ctx);
+
+    RedisModule_AutoMemory(ctx); /* Use automatic memory management. */
+
+    RedisModuleKey *key = RedisModule_OpenKey(ctx,argv[1], REDISMODULE_READ|REDISMODULE_WRITE);
+    int type = RedisModule_KeyType(key);
+    if (type == REDISMODULE_KEYTYPE_EMPTY)
+        return RedisModule_ReplyWithError(ctx, "Empty key");
+    if (type != REDISMODULE_KEYTYPE_MODULE || RedisModule_ModuleTypeGetType(key) != GridType)
+        return RedisModule_ReplyWithError(ctx, REDISMODULE_ERRORMSG_WRONGTYPE);
+
+    struct GridTypeObject *o = RedisModule_ModuleTypeGetValue(key);
+
+    RedisModule_ReplyWithArray(ctx, (long) (2 + o->rows + o->columns));
+
+    RedisModule_ReplyWithLongLong(ctx, (long long)o->rows);
+    RedisModule_ReplyWithLongLong(ctx, (long long)o->columns);
+
+    for (char** p = o->start; p < o->end; ++p)
+        RedisModule_ReplyWithSimpleString(ctx, *p ? *p : "");
+
+    return REDISMODULE_OK;
+}
+
 /* Type Methods */
 
 void GridType_Free(void *value) 
@@ -578,6 +606,9 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
         return REDISMODULE_ERR;
 
     if (RedisModule_CreateCommand(ctx, "GRID.SHAPE", GridType_ShapeCommand, "readonly", 1, 1, 1) == REDISMODULE_ERR)
+        return REDISMODULE_ERR;
+
+    if (RedisModule_CreateCommand(ctx, "GRID.DUMP", GridType_DumpCommand, "readonly", 1, 1, 1) == REDISMODULE_ERR)
         return REDISMODULE_ERR;
 
     return REDISMODULE_OK;
