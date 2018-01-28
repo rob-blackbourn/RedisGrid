@@ -182,7 +182,7 @@ This example sets the last two columns of each row with the given values.
     5) c
     6) d
 
-### * GRID.DUMP - return the bounds and values for a grid
+### GRID.DUMP - return the bounds and values for a grid
 
     GRID.DUMP <key>
 
