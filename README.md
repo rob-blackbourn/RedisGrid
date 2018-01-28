@@ -1,12 +1,14 @@
 # RedisGrid
 
-A grid module for Redis
+A grid module for Redis.
+
+There is a python client [RedisGridPy](https://github.com/rob-blackbourn/RedisGridPy).
 
 ## Status
 
 This is definately alpha. Use at you're own risk.
 
-It wwas developed on CentOS 7 against Redis 4.0.7.
+It was developed on CentOS 7 against Redis 4.0.7.
 
 ## Description
 
