@@ -28,8 +28,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#define UNUSED(V) ((void) V)
-
 #define GRIDMODULE_ERRORMSG__ROWNOTINT "WRONGTYPE Row should be an int"
 #define GRIDMODULE_ERRORMSG__COLNOTINT "WRONGTYPE Column should be an int"
 
@@ -42,7 +40,6 @@
    ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
      _a <= _b ? _a : _b; })
-
 
 static RedisModuleType *GridType;
 
@@ -601,8 +598,8 @@ void GridType_Digest(RedisModuleDigest *md, void *value)
 
 int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
 {
-    UNUSED(argv);
-    UNUSED(argc);
+    REDISMODULE_NOT_USED(argv);
+    REDISMODULE_NOT_USED(argc);
 
     if (RedisModule_Init(ctx, "GRID", 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR)
         return REDISMODULE_ERR;
