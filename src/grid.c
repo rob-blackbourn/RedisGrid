@@ -91,7 +91,7 @@ int GridType_copyRedisStrings(RedisModuleString** source, char** start, char** e
 
 char** GridType_copyAndAllocRedisStrings(RedisModuleString** source, size_t len)
 {
-    char** destination = (char**)RedisModule_Alloc(sizeof(char*) * len);
+    char** destination = (char**)RedisModule_Alloc(sizeof(char**) * len);
     if (!destination)
         return NULL;
 
