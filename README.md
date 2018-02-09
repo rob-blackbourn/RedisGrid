@@ -1,12 +1,14 @@
 # RedisGrid
 
-A grid module for Redis
+A grid module for Redis.
+
+There is a python client [RedisGridPy](https://github.com/rob-blackbourn/RedisGridPy).
 
 ## Status
 
 This is definately alpha. Use at you're own risk.
 
-It wwas developed on CentOS 7 against Redis 4.0.7.
+It was developed on CentOS 7 against Redis 4.0.7.
 
 ## Description
 
@@ -210,3 +212,18 @@ This example returns the bounds and data for the grid.
     13) 11
     14) 12
 
+## Thoughts
+
+The major issue I feel unsure about is the AOF re-write functionality. I have
+been unable to find good documentation about this. With the exception of the
+example module, the modules I have looked at have provided empty implementations
+for this. I've put in something that looks reasonable, but I don't know how to
+establish it's correctness.
+
+My main concerns regard memory usage:
+* The grid is currently allocated as a block of pointers. I could have chosen an
+  array of row pointers to column pointers. While this would add complexity, it
+  would allocate smaller blocks, which might improve memory management. It would
+  also make functions such as inserting rows more efficient.
+* Rather than reallocting memory, I allocate new memory and free the old. This
+  simplified the implementation, but might prove slower when a grid is resized.
