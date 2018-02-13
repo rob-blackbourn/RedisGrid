@@ -2,7 +2,7 @@
 
 A grid module for Redis.
 
-There is a python client [RedisGridPy](https://github.com/rob-blackbourn/RedisGridPy).
+There is a client for .Net and python.
 
 ## Status
 
