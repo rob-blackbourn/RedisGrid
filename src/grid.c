@@ -87,23 +87,23 @@ int GridType_resetRedisString(RedisModuleString** source, char** destination)
 
 void GridType_clearRedisStrings(char **start, char **end)
 {
-    for (char **values = start; values < end; ++values)
+    for (char **p = start; p < end; ++p)
     {
-        if (*values)
+        if (*p)
         {
-            RedisModule_Free(*values);
-            *values = NULL;
+            RedisModule_Free(*p);
+            *p = NULL;
         }
     }
 }
 
 int GridType_copyRedisStrings(RedisModuleString** source, char** start, char** end)
 {
-    for (char** value = start; value < end; ++value, ++source)
+    for (char** p = start; p < end; ++p, ++source)
     {
-        if (GridType_setRedisString(source, value) != REDISMODULE_OK)
+        if (GridType_setRedisString(source, p) != REDISMODULE_OK)
         {
-            GridType_clearRedisStrings(start, value);
+            GridType_clearRedisStrings(start, p);
             return REDISMODULE_ERR;
         }
     }
@@ -113,42 +113,39 @@ int GridType_copyRedisStrings(RedisModuleString** source, char** start, char** e
 
 char** GridType_copyAndAllocRedisStrings(RedisModuleString** source, size_t len)
 {
-    char** destination = (char**)RedisModule_Alloc(sizeof(char**) * len);
+    char** destination = (char**)RedisModule_Alloc(sizeof(char*) * len);
     if (!destination)
         return NULL;
 
-    if (GridType_copyRedisStrings(source, destination, destination + len) == REDISMODULE_OK)
-    {
-        return destination;
-    }
-    else
+    if (GridType_copyRedisStrings(source, destination, destination + len) != REDISMODULE_OK)
     {
         RedisModule_Free(destination);
         return NULL;
     }
+
+    return destination;
 }
 
 struct GridTypeObject *GridType_createObject(size_t rows, size_t columns, RedisModuleString** source) 
 {
     struct GridTypeObject *o;
-    o = RedisModule_Alloc(sizeof(*o));
+    o = RedisModule_Alloc(sizeof(struct GridTypeObject));
     if (!o)
         return NULL;
         
-    o->rows = rows;
-    o->columns = columns;
     size_t len = rows * columns;
-    o->start = GridType_copyAndAllocRedisStrings(source, rows * columns);
-    if (o->start)
-    {
-        o->end = o->start + len;
-        return o;
-    }
-    else
+    o->start = GridType_copyAndAllocRedisStrings(source, len);
+    if (!o->start)
     {
         RedisModule_Free(o);
         return NULL;
     }
+
+    o->rows = rows;
+    o->columns = columns;
+    o->end = o->start + len;
+
+    return o;
 }
 
 void GridType_releaseObject(struct GridTypeObject *o) 
@@ -163,13 +160,13 @@ int GridType_setObject(struct GridTypeObject *o, long long row_start, long long 
     long long row_sign = row_start < row_end ? 1 : -1;
     long long column_sign = column_start < column_end ? 1 : -1;
 
-    for (long long r = row_start, i = 0; r != row_end + row_sign; r += row_sign)
+    for (long long r = row_start; r != row_end + row_sign; r += row_sign)
     {
         char** p = o->start + r * o->columns + column_start;
 
-        for (long long c = column_start; c != column_end + column_sign; c += column_sign, p += column_sign, ++i)
+        for (long long c = column_start; c != column_end + column_sign; c += column_sign, p += column_sign, ++source)
         {
-            if (GridType_resetRedisString(&source[i], p) != REDISMODULE_OK)
+            if (GridType_resetRedisString(source, p) != REDISMODULE_OK)
                 return REDISMODULE_ERR;
         }
     }
@@ -270,18 +267,12 @@ int GridType_resizeAndReplaceObject(struct GridTypeObject *o, size_t rows, size_
     return REDISMODULE_OK;
 }
 
-int GridType_deleteObject(RedisModuleKey *key, struct GridTypeObject *o)
-{
-    GridType_releaseObject(o);
-    return RedisModule_DeleteKey(key);
-}
-
 int GridType_redimObject(RedisModuleKey *key, size_t rows, size_t columns, RedisModuleString **source)
 {
     struct GridTypeObject *o = RedisModule_ModuleTypeGetValue(key);
 
     if (rows == 0 || columns == 0)
-        return GridType_deleteObject(key, o);
+        return RedisModule_DeleteKey(key);
     else if (source)
         return GridType_resizeAndReplaceObject(o, rows, columns, source);
     else 
