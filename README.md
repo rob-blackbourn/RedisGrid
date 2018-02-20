@@ -33,7 +33,20 @@ Assuming it was installed as above, loading it into Redis can be done from redis
 Or you can add it to the redis.conf (typically in /etc/redis/redis_6379.conf).
 
     loadmodule /usr/local/share/redis/grid.so
-    
+
+The module supports two different storage strategies: array and row. The array strategy stores the
+grid as a single one dimensional array. This should be the fasted strategy, but will allocate large
+blocks of memory. The row strategy splits each row into a seperate block of memory which should be
+kinder to the memory management.
+
+The method can be specified in the following manner (case is important):
+
+    loadmodule /usr/local/share/redis/grid.so STORAGE=ARRAY
+or
+    loadmodule /usr/local/share/redis/grid.so STORAGE=ROW
+
+By default the row method is used.
+
 ### Notes
 
 Loading modules which define new types from the command line can cause problems. 
@@ -211,19 +224,3 @@ This example returns the bounds and data for the grid.
     12) 10
     13) 11
     14) 12
-
-## Thoughts
-
-The major issue I feel unsure about is the AOF re-write functionality. I have
-been unable to find good documentation about this. With the exception of the
-example module, the modules I have looked at have provided empty implementations
-for this. I've put in something that looks reasonable, but I don't know how to
-establish it's correctness.
-
-My main concerns regard memory usage:
-* The grid is currently allocated as a block of pointers. I could have chosen an
-  array of row pointers to column pointers. While this would add complexity, it
-  would allocate smaller blocks, which might improve memory management. It would
-  also make functions such as inserting rows more efficient.
-* Rather than reallocting memory, I allocate new memory and free the old. This
-  simplified the implementation, but might prove slower when a grid is resized.
