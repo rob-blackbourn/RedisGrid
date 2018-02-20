@@ -225,10 +225,10 @@ void ArrayGrid_rangeObject(RedisModuleCtx *ctx, struct ArrayGrid *o, long long r
 int ArrayGrid_getRangeValues(RedisModuleCtx *ctx, struct ArrayGrid *o, RedisModuleString **argv, long long *row_start, long long *row_end, long long *column_start, long long *column_end)
 {
     int are_ranges_ok  =
-        GridType_getRangeValue(ctx, argv, 2, (long long)o->rows, row_start, "Start row must be an integer", "Start row outside the bounds of the grid") == REDISMODULE_OK &&
-        GridType_getRangeValue(ctx, argv, 3, (long long)o->rows, row_end, "End row must be an integer", "End row outside the bounds of the grid") == REDISMODULE_OK &&
-        GridType_getRangeValue(ctx, argv, 4, (long long)o->columns, column_start, "Start column must be an integer", "Start column outside the bounds of the grid") == REDISMODULE_OK &&
-        GridType_getRangeValue(ctx, argv, 5, (long long)o->columns, column_end, "End column must be an integer", "End column outside the bounds of the grid") == REDISMODULE_OK;
+        GridType_getRangeValue(ctx, argv, 0, (long long)o->rows, row_start, "Start row must be an integer", "Start row outside the bounds of the grid") == REDISMODULE_OK &&
+        GridType_getRangeValue(ctx, argv, 1, (long long)o->rows, row_end, "End row must be an integer", "End row outside the bounds of the grid") == REDISMODULE_OK &&
+        GridType_getRangeValue(ctx, argv, 2, (long long)o->columns, column_start, "Start column must be an integer", "Start column outside the bounds of the grid") == REDISMODULE_OK &&
+        GridType_getRangeValue(ctx, argv, 3, (long long)o->columns, column_end, "End column must be an integer", "End column outside the bounds of the grid") == REDISMODULE_OK;
     return are_ranges_ok ? REDISMODULE_OK : REDISMODULE_ERR;
 }
 
