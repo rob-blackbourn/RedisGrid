@@ -30,21 +30,15 @@ endif
 export CFLAGS
 export DEBUGFLAGS
 
-SOURCEDIR=$(shell pwd -P)
-CC_SOURCES = $(wildcard $(SOURCEDIR)/*.c)
-CC_OBJECTS = $(patsubst $(SOURCEDIR)/%.c, $(SOURCEDIR)/%.o, $(CC_SOURCES))
-LIBS =
-MODULE=grid.so
+all: grid.so
 
-all: $(MODULE)
-
-$(MODULE): $(CC_OBJECTS)
-	$(LD) -o $@ $(CC_OBJECTS) $(LIBS) $(SHOBJ_LDFLAGS) -lc -lm
+grid.so: grid.o utils.o array_grid.o row_grid.o
+	$(LD) -o $@ $^ $(LIBS) $(SHOBJ_LDFLAGS) -lc -lm
 
 clean:
 	rm -rvf *.so *.o
 
-grid.c: grid.h utils.h array_grid.h row_grid.h
+grid.c: utils.h array_grid.h row_grid.h
 utils.c: utils.h
 array_grid.c: array_grid.h utils.h
 row_grid.c: row_grid.h utils.h
