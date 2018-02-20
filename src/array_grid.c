@@ -46,7 +46,7 @@ char **ArrayGrid_copyAndAllocRedisStrings(RedisModuleString **source, size_t len
 
 struct ArrayGrid *ArrayGrid_createObject(size_t rows, size_t columns, RedisModuleString **source)
 {
-    struct ArrayGrid *o = RedisModule_Alloc(sizeof(struct ArrayGrid));
+    struct ArrayGrid *o = (struct ArrayGrid *)RedisModule_Alloc(sizeof(struct ArrayGrid));
     if (!o)
         return NULL;
         

@@ -74,7 +74,7 @@ char ***RowGrid_copyAndAllocRedisStrings(RedisModuleString **source, size_t rows
 
 struct RowGrid *RowGrid_createObject(size_t rows, size_t columns, RedisModuleString **source)
 {
-    struct RowGrid *o = RedisModule_Alloc(sizeof(struct RowGrid));
+    struct RowGrid *o = (struct RowGrid *)RedisModule_Alloc(sizeof(struct RowGrid));
     if (!o)
         return NULL;
 
@@ -141,7 +141,7 @@ int RowGrid_resizeAndCopyObject(struct RowGrid *o, size_t rows, size_t columns)
 
         // Resize the columns
         for (char ***r = o->rstart; r < rend; ++r)
-            *r = RedisModule_Realloc(*r, columns);
+            *r = (char**)RedisModule_Realloc(*r, sizeof(char*) * columns);
 
         // If the new columns are longer initialize the memory.
         if (columns > o->columns)
@@ -158,14 +158,14 @@ int RowGrid_resizeAndCopyObject(struct RowGrid *o, size_t rows, size_t columns)
     // If the rows are a different size, resize them
     if (rows != o->rows)
     {
-        o->rstart = RedisModule_Realloc(o->rstart, sizeof(char**) * rows);
+        o->rstart = (char***)RedisModule_Realloc(o->rstart, sizeof(char**) * rows);
         o->rend = o->rstart + rows;
         
         // If there are more rows allocate columns
         if (rows > o->rows)
         {
             for (char ***r = o->rstart + o->rows; r < o->rend; ++r)
-                *r = RedisModule_Calloc(columns, sizeof(char**));
+                *r = (char**)RedisModule_Calloc(columns, sizeof(char*));
         }
 
         o->rows = rows;
@@ -193,7 +193,7 @@ int RowGrid_resizeAndReplaceObject(struct RowGrid *o, size_t rows, size_t column
 
         // Resize the columns
         for (char ***r = o->rstart; r < rend; ++r)
-            *r = RedisModule_Realloc(*r, columns);
+            *r = (char**)RedisModule_Realloc(*r, sizeof(char*) * columns);
 
         // If the new columns are longer initialize the memory.
         if (columns > o->columns)
@@ -209,14 +209,14 @@ int RowGrid_resizeAndReplaceObject(struct RowGrid *o, size_t rows, size_t column
     // If the rows are a different size, resize them
     if (rows != o->rows)
     {
-        o->rstart = RedisModule_Realloc(o->rstart, sizeof(char**) * rows);
+        o->rstart = (char***)RedisModule_Realloc(o->rstart, sizeof(char**) * rows);
         o->rend = o->rstart + rows;
         
         // If there are more rows allocate columns
         if (rows > o->rows)
         {
             for (char ***r = o->rstart + o->rows; r < o->rend; ++r)
-                *r = RedisModule_Calloc(columns, sizeof(char**));
+                *r = (char**)RedisModule_Calloc(columns, sizeof(char*));
         }
 
         o->rows = rows;
@@ -276,7 +276,7 @@ int RowGrid_dump(RedisModuleCtx *ctx, struct RowGrid *o)
 
     for (char ***r = o->rstart; r < o->rend; ++r)
     {
-        for (char **c = *r, ** cend = *r + o->columns; c < cend; ++c)
+        for (char **c = *r, **cend = *r + o->columns; c < cend; ++c)
         {
             if (*c)
                 RedisModule_ReplyWithSimpleString(ctx, *c);
