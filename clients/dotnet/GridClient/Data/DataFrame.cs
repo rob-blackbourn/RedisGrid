@@ -14,7 +14,7 @@ namespace StackExchange.Redis.Data
         /// Construct a new data frame.
         /// </summary>
         /// <param name="columns">The columns from which the dataframe is constructed.</param>
-        public DataFrame(params IVector[] columns)
+        public DataFrame(params ISeries[] columns)
             : this(null, null, columns)
         {
         }
@@ -23,7 +23,7 @@ namespace StackExchange.Redis.Data
         /// Construct a new data frame.
         /// </summary>
         /// <param name="columns">The columns from which the dataframe is constructed.</param>
-        public DataFrame(IEnumerable<IVector> columns)
+        public DataFrame(IEnumerable<ISeries> columns)
             : this(null, null, columns.ToArray())
         {
         }
@@ -34,7 +34,7 @@ namespace StackExchange.Redis.Data
         /// <param name="name">The name of the data frame.</param>
         /// <param name="rowHeaders">The row headers</param>
         /// <param name="columns">The columns</param>
-        public DataFrame(string name = null, IEnumerable<string> rowHeaders = null, params IVector[] columns)
+        public DataFrame(string name = null, IEnumerable<string> rowHeaders = null, params ISeries[] columns)
             : this(name, rowHeaders?.ToList(), columns)
         {
         }
@@ -45,7 +45,7 @@ namespace StackExchange.Redis.Data
         /// <param name="name">The name of the dataframe</param>
         /// <param name="rowHeaders">The row gheaders for the data frame</param>
         /// <param name="columns">The columns from which the dataframe is constructed.</param>
-        public DataFrame(string name = null, List<string> rowHeaders = null, params IVector[] columns)
+        public DataFrame(string name = null, List<string> rowHeaders = null, params ISeries[] columns)
             : this(name, rowHeaders, columns.ToList())
         {
         }
@@ -56,11 +56,11 @@ namespace StackExchange.Redis.Data
         /// <param name="name">The name of the dataframe</param>
         /// <param name="rowHeaders">The row gheaders for the data frame</param>
         /// <param name="columns">The columns from which the dataframe is constructed.</param>
-        public DataFrame(string name = null, List<string> rowHeaders = null, List<IVector> columns = null)
+        public DataFrame(string name = null, List<string> rowHeaders = null, List<ISeries> columns = null)
         {
             Name = name;
             RowHeaders = rowHeaders;
-            Columns = columns ?? new List<IVector>();
+            Columns = columns ?? new List<ISeries>();
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace StackExchange.Redis.Data
         }
 
         /// <summary>
-        /// The column vectors.
+        /// The column series.
         /// </summary>
-        public List<IVector> Columns { get; }
+        public List<ISeries> Columns { get; }
 
         /// <summary>
         /// A row enumeration
@@ -163,8 +163,8 @@ namespace StackExchange.Redis.Data
         /// Access a column inn the DataFrame.
         /// </summary>
         /// <param name="index">The index of the column</param>
-        /// <returns>The column vector.</returns>
-        public IVector this[int index]
+        /// <returns>The column series.</returns>
+        public ISeries this[int index]
         {
             get => Columns[index];
             set => Columns[index] = value;
@@ -174,8 +174,8 @@ namespace StackExchange.Redis.Data
         /// Access a column inn the DataFrame.
         /// </summary>
         /// <param name="name">The name of the column</param>
-        /// <returns>The column vector.</returns>
-        public IVector this[string name]
+        /// <returns>The column series.</returns>
+        public ISeries this[string name]
         {
             get { return Columns.FirstOrDefault(x => x.Name == name); }
             set

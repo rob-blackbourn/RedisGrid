@@ -7,42 +7,42 @@ using System.Linq;
 namespace StackExchange.Redis.Data
 {
     /// <summary>
-    /// An implementation of a strongly typed vector.
+    /// An implementation of a strongly typed series.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Vector<T> : IVector<T>
+    public class Series<T> : ISeries<T>
     {
         private readonly List<T> _values;
 
         /// <summary>
-        /// Construct a strongly typed vector.
+        /// Construct a strongly typed series.
         /// </summary>
-        /// <param name="values">The values with which to populated the vector.</param>
-        /// <param name="name">The name of the vector.</param>
+        /// <param name="values">The values with which to populated the series.</param>
+        /// <param name="name">The name of the series.</param>
         /// <param name="isNullable">An optional boolean specifying the nullability</param>
-        public Vector(IEnumerable<T> values, string name = null, bool? isNullable = null)
+        public Series(IEnumerable<T> values, string name = null, bool? isNullable = null)
             : this(values.ToList(), name, isNullable)
         {            
         }
 
         /// <summary>
-        /// Construct a stringly typed vector.
+        /// Construct a stringly typed series.
         /// </summary>
-        /// <param name="values">The values to wrap with this vector.</param>
-        /// <param name="name">The optional name of the vector.</param>
+        /// <param name="values">The values to wrap with this series.</param>
+        /// <param name="name">The optional name of the series.</param>
         /// <param name="isNullable">An optional boolean specifying the nullability</param>
-        public Vector(List<T> values, string name = null, bool? isNullable = null)
+        public Series(List<T> values, string name = null, bool? isNullable = null)
             : this(name, isNullable, values)
         {
         }
 
         /// <summary>
-        /// Construct a strongly typed vector.
+        /// Construct a strongly typed series.
         /// </summary>
-        /// <param name="name">The optional name of the vector.</param>
+        /// <param name="name">The optional name of the series.</param>
         /// <param name="isNullable">An optional boolean specifying the nullability</param>
-        /// <param name="values">The values to wrap with this vector.</param>
-        public Vector(string name = null, bool? isNullable = null, List<T> values = null)
+        /// <param name="values">The values to wrap with this series.</param>
+        public Series(string name = null, bool? isNullable = null, List<T> values = null)
         {
             if (isNullable == true && typeof(T).IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null)
                 throw new ArgumentException("A value type class cannot be nullable");
@@ -196,12 +196,12 @@ namespace StackExchange.Redis.Data
             return ((IEnumerable) _values).GetEnumerator();
         }
 
-        public bool Equals(Vector<T> other)
+        public bool Equals(Series<T> other)
         {
-            return Equals((IVector<T>) other);
+            return Equals((ISeries<T>) other);
         }
 
-        public bool Equals(IVector<T> other)
+        public bool Equals(ISeries<T> other)
         {
             return other != null &&
                 string.Equals(Name, other.Name) && 
@@ -215,7 +215,7 @@ namespace StackExchange.Redis.Data
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((Vector<T>) obj);
+            return Equals((Series<T>) obj);
         }
 
         public override int GetHashCode()

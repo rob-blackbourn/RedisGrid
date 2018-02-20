@@ -1,12 +1,11 @@
-﻿using System;
+﻿using StackExchange.Redis.Data;
+using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using StackExchange.Redis;
-using StackExchange.Redis.Data;
 
-namespace StackExchange.Redis.Data
+namespace StackExchange.Redis
 {
     public static class RedisGrid
     {
@@ -184,16 +183,16 @@ namespace StackExchange.Redis.Data
                 Enumerable
                     .Range(0, source.GetLength(0))
                     .Select(r =>
-                        AsVector(
+                        AsSeries(
                             source[r, 0],
                             source[r, 1],
                             Enumerable.Range(2, source.GetLength(1) - 2).Select(c => source[r, c]))));
         }
 
-        private static IVector AsVector(string name, string dtype, IEnumerable<RedisValue> source)
+        private static ISeries AsSeries(string name, string dtype, IEnumerable<RedisValue> source)
         {
             if (dtype.StartsWith("float"))
-                return new Vector<double?>(source.Select(x => (string)x == "nan" ? null : (double?)x), name);
+                return new Series<double?>(source.Select(x => (string)x == "nan" ? null : (double?)x), name);
 
             if (dtype.StartsWith("int") || dtype.StartsWith("uint"))
             {
@@ -205,25 +204,98 @@ namespace StackExchange.Redis.Data
                     case "uint16":
                     case "int32":
                     case "uint32":
-                        return new Vector<int?>(source.Select(x => (string)x == "nan" ? null : (int?)x), name);
+                        return new Series<int?>(source.Select(x => (string)x == "nan" ? null : (int?)x), name);
                     default:
-                        return new Vector<long?>(source.Select(x => (string)x == "nan" ? null : (long?)x), name);
+                        return new Series<long?>(source.Select(x => (string)x == "nan" ? null : (long?)x), name);
                 }
             }
 
             if (dtype.StartsWith("datetime"))
-                return new Vector<DateTime?>(source.Select(x => (string)x == "nat" ? (DateTime?)null : DateTime.Parse(x)), name);
+                return new Series<DateTime?>(source.Select(x => (string)x == "nat" ? (DateTime?)null : DateTime.Parse(x)), name);
 
             if (dtype.StartsWith("timedelta"))
-                return new Vector<TimeSpan>(source.Select(x => TimeSpan.FromSeconds((double)x)), name);
+                return new Series<TimeSpan>(source.Select(x => TimeSpan.FromSeconds((double)x)), name);
 
             if (dtype.StartsWith("bool"))
-                return new Vector<bool?>(source.Select(x => (string)x == "nan" ? null : (bool?)x), name);
+                return new Series<bool?>(source.Select(x => (string)x == "nan" ? null : (bool?)x), name);
 
             if (dtype.StartsWith("byte"))
-                return new Vector<byte>(source.Select(x => (byte)x), name);
+                return new Series<byte>(source.Select(x => (byte)x), name);
 
-            return new Vector<string>(source.Select(x => (string)x), name);
+            return new Series<string>(source.Select(x => (string)x), name);
+        }
+
+        public static object[,] AsGrid(this DataFrame dataFrame)
+        {
+            var grid = new object[dataFrame.Columns.Count, 2 + dataFrame.Count];
+            for (var i = 0; i < dataFrame.Columns.Count; ++i)
+            {
+                var series = dataFrame[i];
+                grid[i, 0] = series.Name ?? string.Empty;
+                grid[i, 1] = series.DataType();
+                for (var j = 0; j < series.Count; ++j)
+                    grid[i, 2 + j] = series[j].ToRedisString();
+            }
+            return grid;
+        }
+
+        private static string DataType(this ISeries series)
+        {
+            switch (Type.GetTypeCode(Nullable.GetUnderlyingType(series.Type) ?? series.Type))
+            {
+                case TypeCode.Boolean:
+                    return "bool";
+                case TypeCode.Byte:
+                    return "byte";
+                case TypeCode.Char:
+                    return "int8";
+                case TypeCode.DateTime:
+                    return "datetime64[ns]";
+                case TypeCode.DBNull:
+                    return "object";
+                case TypeCode.Decimal:
+                    return "float64";
+                case TypeCode.Double:
+                    return "float64";
+                case TypeCode.Empty:
+                    return "object";
+                case TypeCode.Int16:
+                    return "int16";
+                case TypeCode.Int32:
+                    return "int32";
+                case TypeCode.Int64:
+                    return "int64";
+                case TypeCode.Object:
+                    return "object";
+                case TypeCode.SByte:
+                    return "int32";
+                case TypeCode.Single:
+                    return "float32";
+                case TypeCode.String:
+                    return "object";
+                case TypeCode.UInt16:
+                    return "uint16";
+                case TypeCode.UInt32:
+                    return "uint32";
+                case TypeCode.UInt64:
+                    return "uint64";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string ToRedisString(this object value)
+        {
+            if (value == null)
+                return string.Empty;
+            if (value is string s)
+                return s;
+            if (value is DateTime time)
+                return time.ToString("yyyy-MM-ddTHH:mm:ss.fff");
+            if (value is TimeSpan span)
+                return span.TotalSeconds.ToString(CultureInfo.InvariantCulture);
+
+            return value.ToString();
         }
     }
 }
