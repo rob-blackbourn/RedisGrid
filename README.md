@@ -42,7 +42,9 @@ kinder to the memory management.
 The method can be specified in the following manner (case is important):
 
     loadmodule /usr/local/share/redis/grid.so STORAGE=ARRAY
+
 or
+
     loadmodule /usr/local/share/redis/grid.so STORAGE=ROW
 
 By default the row method is used.
