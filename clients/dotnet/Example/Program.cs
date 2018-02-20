@@ -9,7 +9,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            var redis = ConnectionMultiplexer.Connect("citlonwks208");
+            var redis = ConnectionMultiplexer.Connect("10.11.153.125");
             var db = redis.GetDatabase();
 
             RoundTripGrid(db);
