@@ -43,3 +43,8 @@ $(MODULE): $(CC_OBJECTS)
 
 clean:
 	rm -rvf *.so *.o
+
+grid.c: grid.h utils.h array_grid.h row_grid.h
+utils.c: utils.h
+array_grid.c: array_grid.h utils.h
+row_grid.c: row_grid.h utils.h
