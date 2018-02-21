@@ -1,1 +1,4 @@
 *.pyc
+__pycach__/
+build/
+dist/

@@ -37,7 +37,7 @@ setup(
         'Framework :: AsyncIO',
     ],
     keywords='redis module grid aioredis asyncio',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(exclude=['tests', 'examples']),
     install_requires=['aioredis'],  # Optional
     extras_require={  # Optional
         'pandas': ['pandas'],

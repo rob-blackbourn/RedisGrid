@@ -16,7 +16,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='aioredisgrid',
+    name='redisgrid',
     version='1.0.0',
     description='A client for the Redis grid module using aioredis',
     long_description=long_description,
@@ -36,7 +36,7 @@ setup(
         'Topic :: Software Development :: Libraries'
     ],
     keywords='redis module grid redis',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(exclude=['tests', 'examples']),
     install_requires=['redis'],  # Optional
     extras_require={  # Optional
         'pandas': ['pandas'],

@@ -17,24 +17,24 @@ class DataFrameClient(GridClient):
     def __init__(self, *args, **kwargs):
         GridClient.__init__(self, *args, **kwargs)
 
-    def grid_save_df(self, key, df, preserve_dtypes=False):
+    def grid_save_df(self, key, df):
         columns, rows = df.shape
-        if preserve_dtypes:
-            values = [(name, series.dtype.name, *series.tolist()) for name, series in df.iteritems()]
-            columns += 2
-        else:
-            values = [(name, *series.tolist()) for name, series in df.iteritems()]
-            columns += 1
+        values = [(name, series.dtype.name, *series.tolist()) for name, series in df.iteritems()]
+        columns += 2
         flat = [_encode(x) for sublist in values for x in sublist]
         return self.execute_command("GRID.DIM", key, rows, columns, *flat)
     
-    def grid_load_df(self, key, preserve_dtypes=False):
+    def grid_load_df(self, key):
         response = self.grid_dump(key)
-        if not preserve_dtypes:
-            items = [(_decode(sub_list[0]), [_decode(item) for item in sub_list[1:]]) for sub_list in response]
-            return pd.DataFrame.from_items(items)
-
         items = [(_decode(sub_list[0]), [_decode(item) for item in sub_list[2:]]) for sub_list in response]
         df= pd.DataFrame.from_items(items)
         dtypes = dict((_decode(sub_list[0]), _decode(sub_list[1])) for sub_list in response)
         return df.astype(dtypes)
+
+if __name__ == "__main__":
+    client = DataFrameClient(host="localhost")
+
+    df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
+    client.grid_save_df('df', df)
+    df2 = client.grid_load_df('df')
+    print(df2)
