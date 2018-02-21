@@ -23,16 +23,21 @@ To build on most flavours of Linux.
     git clone https://github.com/rob-blackbourn/RedisGrid.git
     cd RedisGrid/src
     make
-    sudo mkdir -p /usr/local/share/redis
-    sudo install redis-grid.so /usr/local/share/redis
+    sudo make install
+
+This will install the module in /usr/local/lib
+
+## Configuration
 
 Assuming it was installed as above, loading it into Redis can be done from redis-cli as follows:
 
-    MODULE LOAD /usr/local/share/redis/redis-grid.so
+    MODULE LOAD /usr/local/lib/redis-grid.so
 
 Or you can add it to the redis.conf (typically in /etc/redis/redis_6379.conf).
 
-    loadmodule /usr/local/share/redis/redis-grid.so
+    loadmodule /usr/local/lib/redis-grid.so
+
+### Storage Strategy
 
 The module supports two different storage strategies: array and row. The array strategy stores the
 grid as a single one dimensional array. This should be the fasted strategy, but will allocate large
@@ -41,11 +46,11 @@ kinder to the memory management.
 
 The method can be specified in the following manner (case is important):
 
-    loadmodule /usr/local/share/redis/redis-grid.so STORAGE=ARRAY
+    loadmodule /usr/local/lib/redis-grid.so STORAGE=ARRAY
 
 or
 
-    loadmodule /usr/local/share/redis/redis-grid.so STORAGE=ROW
+    loadmodule /usr/local/lib/redis-grid.so STORAGE=ROW
 
 By default the row method is used.
 
