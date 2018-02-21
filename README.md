@@ -10,6 +10,14 @@ This is definately alpha. Use at you're own risk.
 
 It was developed on CentOS 7 against Redis 4.0.7.
 
+It has been tested with a local Redis cluster.
+
+## Clients
+
+There are clients for:
+  * .Net
+  * Python 3.6 (pyredis and aioredis)
+
 ## Description
 
 This module provides a type which can hold a grid of data indexed by row and column.
