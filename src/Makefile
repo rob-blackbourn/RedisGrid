@@ -54,9 +54,9 @@ endif
 export CFLAGS
 export DEBUGFLAGS
 
-all: grid.so
+all: redis-grid.so
 
-grid.so: grid.o utils.o array_grid.o row_grid.o
+redis-grid.so: grid.o utils.o array_grid.o row_grid.o
 	$(LD) -o $@ $^ $(LIBS) $(SHOBJ_LDFLAGS) -lc -lm
 
 clean:
