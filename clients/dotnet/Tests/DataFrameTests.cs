@@ -21,7 +21,7 @@ namespace Tests
                 new Series<DateTime?>(new DateTime?[] { new DateTime(1973, 1, 1), new DateTime(1989, 12, 31), new DateTime(2000, 2, 28) }, "DateOfBirth"),
                 new Series<double?>(new double?[] { 1.83, 1.79, 1.66 }, "Height"));
 
-            db.GridDim(key, source.AsGrid());
+            db.GridDim(key, source.AsStringGrid());
 
             // Fetch it back.
             var grid = db.GridDump(key).AsDataFrame();

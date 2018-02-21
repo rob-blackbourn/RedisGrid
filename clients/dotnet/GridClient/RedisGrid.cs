@@ -9,7 +9,7 @@ namespace StackExchange.Redis
 {
     public static class RedisGrid
     {
-        public static bool GridDim<T>(this IDatabase db, RedisKey key, T[,] grid)
+        public static bool GridDim(this IDatabase db, RedisKey key, string[,] grid)
         {
             var rows = grid.GetLength(0);
             var columns = grid.GetLength(1);
@@ -17,11 +17,11 @@ namespace StackExchange.Redis
             args[0] = key;
             args[1] = rows;
             args[2] = columns;
-            Copy(grid, args, 3);
+            Flatten(grid, args, 3);
             return (string)db.Execute("GRID.DIM", args) == "OK";
         }
 
-        public static async Task<bool> GridDimAsync<T>(this IDatabase db, RedisKey key, T[,] grid)
+        public static async Task<bool> GridDimAsync(this IDatabase db, RedisKey key, string[,] grid)
         {
             var rows = grid.GetLength(0);
             var columns = grid.GetLength(1);
@@ -29,23 +29,23 @@ namespace StackExchange.Redis
             args[0] = key;
             args[1] = rows;
             args[2] = columns;
-            Copy(grid, args, 3);
+            Flatten(grid, args, 3);
             return (string)await db.ExecuteAsync("GRID.DIM", args) == "OK";
         }
 
-        public static bool GridDim(this IDatabase db, RedisKey key, int rows, int columns, params object[] optionalArgs)
+        public static bool GridDim(this IDatabase db, RedisKey key, int rows, int columns, params string[] elements)
         {
             var args = new List<object> { key, rows, columns };
-            if (optionalArgs != null && optionalArgs.Length > 0)
-                args.AddRange(optionalArgs);
+            if (elements != null && elements.Length > 0)
+                args.AddRange(elements);
             return (string)db.Execute("GRID.DIM", args) == "OK";
         }
 
-        public static async Task<bool> GridDimAsync(this IDatabase db, RedisKey key, int rows, int columns, params object[] optionalArgs)
+        public static async Task<bool> GridDimAsync(this IDatabase db, RedisKey key, int rows, int columns, params string[] elements)
         {
             var args = new List<object> { key, rows, columns };
-            if (optionalArgs != null && optionalArgs.Length > 0)
-                args.AddRange(optionalArgs);
+            if (elements != null && elements.Length > 0)
+                args.AddRange(elements);
             return (string)await db.ExecuteAsync("GRID.DIM", args).ConfigureAwait(false) == "OK";
         }
 
@@ -63,15 +63,15 @@ namespace StackExchange.Redis
 
         public static RedisValue[] GridRange(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd)
         {
-            return (RedisValue[])db.Execute("GRID.RANGE", rowStart, rowEnd, columnStart, columnEnd);
+            return (RedisValue[])db.Execute("GRID.RANGE", key, rowStart, rowEnd, columnStart, columnEnd);
         }
 
         public static async Task<RedisValue[]> GridRangeAsync(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd)
         {
-            return (RedisValue[])await db.ExecuteAsync("GRID.RANGE", rowStart, rowEnd, columnStart, columnEnd);
+            return (RedisValue[])await db.ExecuteAsync("GRID.RANGE", key, rowStart, rowEnd, columnStart, columnEnd);
         }
 
-        public static bool GridSet<T>(this IDatabase db, RedisKey key, int rowStart, int columnStart, T[,] items)
+        public static bool GridSet(this IDatabase db, RedisKey key, int rowStart, int columnStart, string[,] items)
         {
             var rows = items.GetLength(0);
             var columns = items.GetLength(1);
@@ -81,11 +81,11 @@ namespace StackExchange.Redis
             args[2] = rowStart + rows - 1;
             args[3] = columnStart;
             args[4] = columnStart + columns - 1;
-            Copy(items, args, 5);
+            Flatten(items, args, 5);
             return (string)db.Execute("GRID.SET", args) == "OK";
         }
 
-        public static async Task<bool> GridSetAsync<T>(this IDatabase db, RedisKey key, int rowStart, int columnStart, T[,] items)
+        public static async Task<bool> GridSetAsync(this IDatabase db, RedisKey key, int rowStart, int columnStart, string[,] items)
         {
             var rows = items.GetLength(0);
             var columns = items.GetLength(1);
@@ -95,11 +95,11 @@ namespace StackExchange.Redis
             args[2] = rowStart + rows - 1;
             args[3] = columnStart;
             args[4] = columnStart + columns - 1;
-            Copy(items, args, 5);
+            Flatten(items, args, 5);
             return (string)await db.ExecuteAsync("GRID.SET", args) == "OK";
         }
 
-        public static bool GridSet(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, params object[] items)
+        public static bool GridSet(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, params string[] items)
         {
             var args = new object[5 + items.Length];
             args[0] = key;
@@ -111,7 +111,7 @@ namespace StackExchange.Redis
             return (string)db.Execute("GRID.SET", args) == "OK";
         }
 
-        public static async Task<bool> GridSetAsync(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, params object[] items)
+        public static async Task<bool> GridSetAsync(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, params string[] items)
         {
             var args = new object[5 + items.Length];
             args[0] = key;
@@ -128,9 +128,7 @@ namespace StackExchange.Redis
             var response = (RedisValue[])db.Execute("GRID.DUMP", key);
             var rows = (int)response[0];
             var columns = (int)response[1];
-            var grid = new RedisValue[rows, columns];
-            Copy(response, 2, grid);
-            return grid;
+            return MakeRedisValueGrid(response, 2, rows, columns);
         }
 
         public static async Task<RedisValue[,]> GridDumpAsync(this IDatabase db, RedisKey key)
@@ -138,31 +136,24 @@ namespace StackExchange.Redis
             var response = (RedisValue[])await db.ExecuteAsync("GRID.DUMP", key);
             var rows = (int)response[0];
             var columns = (int)response[1];
+            return MakeRedisValueGrid(response, 2, rows, columns);
+        }
+
+        private static RedisValue[,] MakeRedisValueGrid(RedisValue[] source, int offset, int rows, int columns)
+        {
             var grid = new RedisValue[rows, columns];
-            Copy(response, 2, grid);
+            for (int i = offset, r = 0; r < grid.GetLength(0); ++r)
+                for (var c = 0; c < grid.GetLength(1); ++c, ++i)
+                    grid[r, c] = source[i];
             return grid;
         }
 
-        public static void Copy(RedisValue[] source, int offset, RedisValue[,] destination)
-        {
-            for (int i = offset, r = 0; r < destination.GetLength(0); ++r)
-            for (int c = 0; c < destination.GetLength(1); ++c, ++i)
-                destination[r, c] = source[i];
-        }
-
-        public static void Copy(RedisValue[] source, int offset, string[,] destination)
-        {
-            for (int i = offset, r = 0; r < destination.GetLength(0); ++r)
-            for (int c = 0; c < destination.GetLength(1); ++c, ++i)
-                destination[r, c] = source[i];
-        }
-
-        public static void Copy<T>(T[,] source, object[] destination, int offset)
+        private static void Flatten(string[,] source, object[] destination, int offset)
         {
             var rows = source.GetLength(0);
             var columns = source.GetLength(1);
             for (int i = offset, r = 0; r < rows; ++r)
-                for (int c = 0; c < columns; ++c, ++i)
+                for (var c = 0; c < columns; ++c, ++i)
                     destination[i] = source[r, c];
         }
 
@@ -175,6 +166,20 @@ namespace StackExchange.Redis
             for (var c = 0; c < columns; ++c)
                 grid[r, c] = source[r, c];
             return grid;
+        }
+
+        public static string[,] AsStringGrid(this RedisValue[] source, int rows, int columns)
+        {
+            var grid = new string[rows, columns];
+            for (int r = 0, i = 0; r < rows; ++r)
+            for (var c = 0; c < columns; ++c, ++i)
+                grid[r, c] = source[i];
+            return grid;
+        }
+
+        public static string[] AsStringArray(this RedisValue[] source)
+        {
+            return source.Select(x => x.ToString()).ToArray();
         }
 
         public static DataFrame AsDataFrame(this RedisValue[,] source)
@@ -225,9 +230,9 @@ namespace StackExchange.Redis
             return new Series<string>(source.Select(x => (string)x), name);
         }
 
-        public static object[,] AsGrid(this DataFrame dataFrame)
+        public static string[,] AsStringGrid(this DataFrame dataFrame)
         {
-            var grid = new object[dataFrame.Columns.Count, 2 + dataFrame.Count];
+            var grid = new string[dataFrame.Columns.Count, 2 + dataFrame.Count];
             for (var i = 0; i < dataFrame.Columns.Count; ++i)
             {
                 var series = dataFrame[i];
