@@ -20,10 +20,10 @@ setup(
     version='1.0.0',
     description='A client for the Redis grid module using aioredis',
     long_description=long_description,
-    url='https://github.com/rob-blackbourn/RedisGrid/tree/master/clients/python/aioredisgrid',
+    url='https://github.com/rob-blackbourn/RedisGrid/tree/master/clients/python/aioredis-grid',
     author='Rob Blackbourn',
     author_email='rob.blackbourn@gmail.com',
-    classifiers=[  # Optional
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -38,8 +38,8 @@ setup(
     ],
     keywords='redis module grid aioredis asyncio',
     packages=find_packages(exclude=['tests', 'examples']),
-    install_requires=['aioredis'],  # Optional
-    extras_require={  # Optional
+    install_requires=['aioredis'],
+    extras_require={
         'pandas': ['pandas'],
     },
 )
