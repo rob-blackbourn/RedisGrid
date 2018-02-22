@@ -20,7 +20,7 @@ setup(
     version='1.0.0',
     description='A client for the Redis grid module using aioredis',
     long_description=long_description,
-    url='https://github.com/rob-blackbourn/RedisGrid/tree/master/clients/python/redisgrid',
+    url='https://github.com/rob-blackbourn/RedisGrid/tree/master/clients/python/redis-py-grid',
     author='Rob Blackbourn',
     author_email='rob.blackbourn@gmail.com',
     classifiers=[  # Optional
