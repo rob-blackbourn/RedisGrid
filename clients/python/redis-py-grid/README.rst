@@ -1,7 +1,7 @@
 redisgrid
 =========
 
-A python module for the Redis grid module using redis-py `redis-py<https://github.com/andymccurdy/redis-py>`_.
+A python module for the Redis grid module using redis-py `redis-py <https://github.com/andymccurdy/redis-py>`_.
 
 Installation
 ------------
@@ -12,7 +12,7 @@ To install redis-py-grid, simply:
 
     $ python setup.py install
 
-If you require support for pandas dataframes follow the the instructions at `scipy<https://www.scipy.org/>`_.
+If you require support for pandas dataframes follow the the instructions at `scipy <https://www.scipy.org/>`_.
 
 Usage
 -----
