@@ -66,6 +66,6 @@ class GridCommandsMixin:
     def grid_dump(self, key):
         """Returns the entire grid stored at key.
         """
-        fut = self.execute_command(b"GRID.DUMP", key)   
+        fut = self.execute(b"GRID.DUMP", key)   
         return wait_make_grid(fut)
 
