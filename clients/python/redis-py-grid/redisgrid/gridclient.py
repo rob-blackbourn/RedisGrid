@@ -1,5 +1,5 @@
 import six
-from redis import StrictRedis
+import redis
 from redis.client import bool_ok
 
 def _parse_grid_dump(response, **options):
@@ -7,10 +7,10 @@ def _parse_grid_dump(response, **options):
     unpacked = [response[x:x+columns] for x in range(2, len(response), columns)]
     return unpacked
 
-class GridClient(StrictRedis):
+class StrictRedis(redis.StrictRedis):
     
     def __init__(self, *args, **kwargs):
-        StrictRedis.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         
         # Set the module commands' callbacks
         MODULE_CALLBACKS = {

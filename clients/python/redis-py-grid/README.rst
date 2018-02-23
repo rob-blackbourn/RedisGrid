@@ -21,8 +21,8 @@ The following example stores and retrieves a grid:
 
 .. code-block:: pycon
 
-    >>> from redisgrid import GridClient
-    >>> r = GridClient(host='localhost')
+    >>> from redisgrid import StrictRedis
+    >>> r = StrictRedis(host='localhost')
     >>> r.grid_dim("a1", 2, 3, 1, 2, 3, 4, 5, 6)
     True
     >>> values = r.grid_dump("a1")
@@ -33,9 +33,9 @@ The following example stores and retrieves a pandas dataframe.
 
 .. code-block:: pycon
 
-    >>> from redisgrid import DataFrameClient
+    >>> from redisgrid import StrictRedis
     >>> import pandas as pd
-    >>> r = DataFrameClient(host="localhost")
+    >>> r = StrictRedis(host="localhost")
     >>> df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
     >>> r.grid_save_df('df', df)
     True

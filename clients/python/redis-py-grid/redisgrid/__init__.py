@@ -1,7 +1,9 @@
-from redisgrid.gridclient import GridClient
+"""Add support for grids
+"""
 
 try:
     import pandas
-    from redisgrid.dataframeclient import DataFrameClient
+    from redisgrid.dataframeclient import StrictRedis
 except:
-    pass
+    from redisgrid.gridclient import StrictRedis
+

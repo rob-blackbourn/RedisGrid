@@ -1,5 +1,5 @@
 import pandas as pd
-from redisgrid.gridclient import GridClient
+import redisgrid.gridclient as gridclient
 
 def _encode(value):
     if isinstance(value, pd.Timestamp):
@@ -12,10 +12,10 @@ def _encode(value):
 def _decode(value):
     return str(value, 'utf-8')
 
-class DataFrameClient(GridClient):
+class StrictRedis(gridclient.StrictRedis):
     
     def __init__(self, *args, **kwargs):
-        GridClient.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def grid_save_df(self, key, df):
         columns, rows = df.shape
@@ -30,11 +30,3 @@ class DataFrameClient(GridClient):
         df= pd.DataFrame.from_items(items)
         dtypes = dict((_decode(sub_list[0]), _decode(sub_list[1])) for sub_list in response)
         return df.astype(dtypes)
-
-if __name__ == "__main__":
-    client = DataFrameClient(host="localhost")
-
-    df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
-    client.grid_save_df('df', df)
-    df2 = client.grid_load_df('df')
-    print(df2)

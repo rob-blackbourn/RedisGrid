@@ -1,7 +1,7 @@
-from redisgrid import DataFrameClient
+from redisgrid import StrictRedis
 import pandas as pd
 
-client = DataFrameClient(host="localhost")
+client = StrictRedis(host="localhost")
 
 df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
 client.grid_save_df('df', df)
