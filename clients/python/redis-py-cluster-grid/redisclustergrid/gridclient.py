@@ -1,5 +1,5 @@
 import six
-from rediscluster import StrictRedisCluster
+import rediscluster
 from redis.client import bool_ok
 
 def _parse_grid_dump(response, **options):
@@ -7,10 +7,10 @@ def _parse_grid_dump(response, **options):
     unpacked = [response[x:x+columns] for x in range(2, len(response), columns)]
     return unpacked
 
-class GridClusterClient(StrictRedisCluster):
+class StrictRedisCluster(rediscluster.StrictRedisCluster):
     
     def __init__(self, *args, **kwargs):
-        StrictRedisCluster.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         
         # Set the module commands' callbacks
         MODULE_CALLBACKS = {
@@ -37,19 +37,3 @@ class GridClusterClient(StrictRedisCluster):
     def grid_dump(self, key):
         return self.execute_command("GRID.DUMP", key)
 
-if __name__ == "__main__":
-
-    startup_nodes = [
-        {"host": "127.0.0.1", "port": "7000"},
-        {"host": "127.0.0.1", "port": "7001"},
-        {"host": "127.0.0.1", "port": "7002"},
-        {"host": "127.0.0.1", "port": "7003"},
-        {"host": "127.0.0.1", "port": "7004"},
-        {"host": "127.0.0.1", "port": "7005"},
-        ]
-
-    r = GridClusterClient(startup_nodes=startup_nodes, decode_responses=True)
-
-    r.grid_dim("a1", 2, 3, 1, 2, 3, 4, 5, 6)
-    values = r.grid_dump("a1")
-    print(values)

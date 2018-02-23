@@ -1,5 +1,5 @@
 import pandas as pd
-from redisclustergrid.gridclient import GridClusterClient
+import redisclustergrid.gridclient as gridclient
 
 def _encode(value):
     if isinstance(value, pd.Timestamp):
@@ -9,13 +9,10 @@ def _encode(value):
     else:
         return str(value)
 
-def _decode(value):
-    return str(value, 'utf-8')
-
-class DataFrameClusterClient(GridClusterClient):
+class StrictRedisCluster(gridclient.StrictRedisCluster):
     
     def __init__(self, *args, **kwargs):
-        GridClusterClient.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def grid_save_df(self, key, df):
         columns, rows = df.shape
@@ -26,15 +23,7 @@ class DataFrameClusterClient(GridClusterClient):
     
     def grid_load_df(self, key):
         response = self.grid_dump(key)
-        items = [(_decode(sub_list[0]), [_decode(item) for item in sub_list[2:]]) for sub_list in response]
+        items = [(sub_list[0], [item for item in sub_list[2:]]) for sub_list in response]
         df= pd.DataFrame.from_items(items)
-        dtypes = dict((_decode(sub_list[0]), _decode(sub_list[1])) for sub_list in response)
+        dtypes = dict((sub_list[0], sub_list[1]) for sub_list in response)
         return df.astype(dtypes)
-
-if __name__ == "__main__":
-    client = DataFrameClusterClient(host="localhost")
-
-    df = pd.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
-    client.grid_save_df('df', df)
-    df2 = client.grid_load_df('df')
-    print(df2)
