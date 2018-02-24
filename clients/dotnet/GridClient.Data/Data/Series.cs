@@ -196,11 +196,13 @@ namespace StackExchange.Redis.Data
             return ((IEnumerable) _values).GetEnumerator();
         }
 
+        /// <inheritdoc />
         public bool Equals(Series<T> other)
         {
             return Equals((ISeries<T>) other);
         }
 
+        /// <inheritdoc />
         public bool Equals(ISeries<T> other)
         {
             return other != null &&
@@ -210,6 +212,7 @@ namespace StackExchange.Redis.Data
                 _values.SequenceEqual(other);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -218,6 +221,7 @@ namespace StackExchange.Redis.Data
             return Equals((Series<T>) obj);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             unchecked
@@ -230,6 +234,7 @@ namespace StackExchange.Redis.Data
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"Name=\"{Name}\", Type={Type}, IsNullable={IsNullable}, Count={Count}";

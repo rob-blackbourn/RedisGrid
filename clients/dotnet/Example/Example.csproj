@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GridClient.Data\GridClient.Data.csproj" />
     <ProjectReference Include="..\GridClient\GridClient.csproj" />
   </ItemGroup>
 
