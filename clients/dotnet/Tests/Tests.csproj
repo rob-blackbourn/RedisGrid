@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GridClient\GridClient.csproj" />
+    <ProjectReference Include="..\GridClient.Data\GridClient.Data.csproj" />
   </ItemGroup>
 
 </Project>
