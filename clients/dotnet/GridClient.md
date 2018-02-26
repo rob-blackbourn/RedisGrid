@@ -1,14 +1,12 @@
 # GridClient
 
-
 ## Redis.RedisGrid
             
 An extension class providing methods for the Redis Grid module.
         
 ### Methods
 
-
-#### GridDim(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.String[0:,0:])
+#### bool GridDim(this IDatabase db, RedisKey key, string[,] grid)
 Dimension a grid with a two dimensional array.
 ##### Parameters
 * **db:** The database in which the grid will be stored.
@@ -17,7 +15,7 @@ Dimension a grid with a two dimensional array.
 ##### Return value
 If the grid is stored true, otherwise false.
 
-#### GridDimAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.String[0:,0:])
+#### Task<bool> GridDimAsync(this IDatabase db, RedisKey key, string[,])
 Dimension a grid asynchronously with a two dimensional array.
 ##### Parameters
 * **db:** The database in which the grid will be stored.
@@ -26,7 +24,7 @@ Dimension a grid asynchronously with a two dimensional array.
 ##### Return value
 If the grid is stored true, otherwise false.
 
-#### GridDim(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.String[])
+#### bool GridDim(this IDatabase db, RedisKey key, int rows, int columns, params string[] elements)
 Dimension a grid of a given size with an optional one dimentional array of elements.
 ##### Parameters
 * **db:** The database in which the grid will be stored.
@@ -37,7 +35,7 @@ Dimension a grid of a given size with an optional one dimentional array of eleme
 ##### Return value
 If the grid is stored true, otherwise false.
 
-#### GridDimAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.String[])
+#### Task<bool> GridDimAsync(this IDatabase db, RedisKey key, int rows, int rows, string[])
 Dimension a grid asynchronously of a given size with an optional one dimentional array of elements.
 ##### Parameters
 * **db:** The database in which the grid will be stored.
@@ -48,7 +46,7 @@ Dimension a grid asynchronously of a given size with an optional one dimentional
 ##### Return value
 If the grid is stored true, otherwise false.
 
-#### GridShape(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey)
+#### int[] GridShape(this IDatabase db, RedisKey key)
 Find the number of rows and columns in a grid.
 ##### Parameters
 * **db:** The database in which the grid will be stored.
@@ -56,7 +54,7 @@ Find the number of rows and columns in a grid.
 ##### Return value
 An array of two integers where the first is the rows and the second the columns.
 
-#### GridShapeAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey)
+#### Task<int[]> GridShapeAsync(this IDatabase db, RedisKey key)
 Find the number of rows and columns in a grid asynchronously.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -64,7 +62,7 @@ Find the number of rows and columns in a grid asynchronously.
 ##### Return value
 An array of two integers where the first is the rows and the second the columns.
 
-#### GridRange(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.Int32,System.Int32)
+#### RedisValue[] GridRange(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd)
 Query a range of rows and columns in a grid. If the start row or column is less than the end row or column the results will obey the direction.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -76,7 +74,7 @@ Query a range of rows and columns in a grid. If the start row or column is less 
 ##### Return value
 A one dimentional array of the range ordered row-wise.
 
-#### GridRangeAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.Int32,System.Int32)
+#### Task<RedisValue[]> GridRangeAsync(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd)
 Query a range of rows and columns in a grid asynchronously. If the start row or column is less than the end row or column the results will obey the direction.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -88,7 +86,7 @@ Query a range of rows and columns in a grid asynchronously. If the start row or 
 ##### Return value
 A one dimentional array of the range ordered row-wise.
 
-#### GridSet(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.String[0:,0:])
+#### bool GridSet(this IDatabase db, RedisKey key, int rowStart, int columnStart, string[,] grid)
 Set a range of values in a grid.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -99,7 +97,7 @@ Set a range of values in a grid.
 ##### Return value
 The method returns true if the operation succeeded, otheraise false.
 
-#### GridSetAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.String[0:,0:])
+#### Task<bool> GridSetAsync(this IDatabase db, RedisKey key, int rowStart, int columnStart, string[,] grid)
 Set a range of values in a grid asynchronously.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -110,7 +108,7 @@ Set a range of values in a grid asynchronously.
 ##### Return value
 The method returns true if the operation succeeded, otheraise false.
 
-#### GridSet(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.Int32,System.Int32,System.String[])
+#### bool GridSet(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, string[] elements)
 Set values in a grid between row and column limits with a one dimentional array of data. This method reflects the underlying process of storing data in the grid.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -123,7 +121,7 @@ Set values in a grid between row and column limits with a one dimentional array 
 ##### Return value
 The method returns true if the operation succeeded, otheraise false.
 
-#### GridSetAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey,System.Int32,System.Int32,System.Int32,System.Int32,System.String[])
+#### Task<bool> GridSetAsync(this IDatabase db, RedisKey key, int rowStart, int rowEnd, int columnStart, int columnEnd, string[] elements)
 Set values asynchronously in a grid between row and column limits with a one dimentional array of data. This method reflects the underlying process of storing data in the grid.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -136,7 +134,7 @@ Set values asynchronously in a grid between row and column limits with a one dim
 ##### Return value
 The method returns true if the operation succeeded, otheraise false.
 
-#### GridDump(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey)
+#### RedisValue[,] GridDump(this IDatabase db, RedisKey key)
 Returns the grid found with the given key.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -144,7 +142,7 @@ Returns the grid found with the given key.
 ##### Return value
 The two dimentional grid found.
 
-#### GridDumpAsync(StackExchange.Redis.IDatabase,StackExchange.Redis.RedisKey)
+#### Task<RedisValue[,]> GridDumpAsync(this IDatabase db, RedisKey key)
 Returns the grid found with the given key asynchronously.
 ##### Parameters
 * **db:** The database in which the grid is stored.
@@ -152,14 +150,14 @@ Returns the grid found with the given key asynchronously.
 ##### Return value
 The two dimentional grid found.
 
-#### AsStringGrid(StackExchange.Redis.RedisValue[0:,0:])
+#### string[,] AsStringGrid(this RedisValue[,] source)
 Convert a two dimentional array of RedisValue objects to an array of the same size of strings. Note that the underlying storage of the grid is a string or null.
 ##### Parameters
 * **source:** The source grid.
 ##### Return value
 A two dimentional string array.
 
-#### AsStringGrid(StackExchange.Redis.RedisValue[],System.Int32,System.Int32)
+#### string[,] AsStringGrid(this RedisValue[] source, int rows, int columns)
 Convert a one dimensional array of a given shape to a two dimensional string array.
 ##### Parameters
 * **source:** A one dimensional array of RedisValue structs ordered row-wise.
@@ -168,14 +166,14 @@ Convert a one dimensional array of a given shape to a two dimensional string arr
 ##### Return value
 The input converted to a two dimensional string array.
 
-#### AsDataFrame(StackExchange.Redis.RedisValue[0:,0:])
+#### DataFrame AsDataFrame(this RedisValue[,] source)
 Convert a two dimensional array of RedisStructs to a data frame. The grid must have been saved with correctly formatted information regarding the name and type of each series in the data frame.
 ##### Parameters
 * **source:** A two dimentional array of RedisValue structs.
 ##### Return value
 A data frame
 
-#### AsStringGrid(StackExchange.Redis.Data.DataFrame)
+#### string[,] AsStringGrid(this DataFrame dataFrame)
 Convert a data frame into a two dimensional array of strings. The grid returned includes the name and type of each series in the data frame.
 ##### Parameters
 * **dataFrame:** The data frame to convert.
